@@ -1,6 +1,6 @@
 
 
-function dfs(start, nodes, fn) {
+function search(type, start, nodes, fn) {
     var visited = [start];
     function _notVisited(value, index, self) { 
         return visited.indexOf(value) < 0;
@@ -9,24 +9,14 @@ function dfs(start, nodes, fn) {
     while( nodes_to_visit.length > 0) {
         var current = nodes_to_visit.shift();
         visited.push(current);
-        nodes_to_visit = nodes[current].slice(0).concat(nodes_to_visit).filter(_notVisited);
+        if(type == "dfs") // prepend to the searchlist
+            nodes_to_visit = nodes[current].slice(0).concat(nodes_to_visit).filter(_notVisited);
+        else // append to the searchlist
+            nodes_to_visit = nodes_to_visit.concat(nodes[current].slice(0)).filter(_notVisited);
         if(fn(current)) return;
     }
 };
 
-function bfs(start, nodes, fn) {
-    var visited = [start];
-    function _notVisited(value, index, self) { 
-        return visited.indexOf(value) < 0;
-    }
-    var nodes_to_visit = nodes[start].slice(0);
-    while( nodes_to_visit.length > 0) {
-        var current = nodes_to_visit.shift();
-        visited.push(current);
-        nodes_to_visit = nodes_to_visit.concat(nodes[current].slice(0)).filter(_notVisited);
-        if(fn(current)) return;
-    }
-};
 
 function helloWriter(o) {
     document.getElementById('hello').innerHTML += "</br>" + JSON.stringify(o);
@@ -52,7 +42,7 @@ var nodes = [
 helloWriter(["nodes",nodes]);
 
 var visited = [];
-dfs(0, nodes, function (n) {
+search('dfs',0, nodes, function (n) {
     if(n == 10) {
         helloWriter(["DFS found",n, "visited",visited.join(', ')])
         return true;
@@ -62,7 +52,7 @@ dfs(0, nodes, function (n) {
 });
 
 visited = [];
-bfs(0, nodes, function (n) {
+search('bfs',0, nodes, function (n) {
     if(n == 10) {
         helloWriter(["BFS found",n, "visited",visited.join(', ')])
         return true;
