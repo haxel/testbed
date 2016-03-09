@@ -17,15 +17,26 @@ function search(type, start, nodes, fn) {
     }
 };
 
-function search_recur(start,nodes,fn) {
-    var current = nodes[start];
-    (function _search_recur(children_list) {
-        for (var i = 0; i < children_list.length; i++) {
-            if(fn(children_list[i])) return;
-            var search = nodes[children_list[i]];
-            _search_recur(search)
+function search_recur(type,start,nodes,fn) {
+   var blacklist = [start];
+   (function _search_recur(current) {
+        for (var i = 0; i < nodes[current].length; i++) {
+            var num = nodes[current][i];
+            if(blacklist.indexOf(num) > -1) return;
+            blacklist.push(num);
+            if(fn(num)) return;
+            // I'm pushing the function on the callback queue 
+            // with setTimeout
+            // the inner loop is on the call stack
+            // -> 0 , 1, 2, 3, 4 function ends and 
+            // the callback queue returns the first level recursive search
+            // puts them on the call stack            
+            if(type == 'bfs') setTimeout(_search_recur,0,num);
+            // if i don't do setTimeout it pushes every call on the call stack
+            // -> 1 -> 5,6 -> 2 
+            else _search_recur(num);
         }
-    })(current);
+    })(start);
 }
 
 function helloWriter(o) {
@@ -45,39 +56,31 @@ var nodes = [
     [],
     [],
     [],
-    [3],
+    [],
     []
 ];
 
 helloWriter(["nodes",nodes]);
 
-var visited = [];
-search('dfs',0, nodes, function (n) {
-    if(n == 10) {
-        helloWriter(["DFS found",n, "visited",visited.join(', ')])
-        return true;
-    }
-    visited.push(n);
-    return false;
-});
+function cbFactory(message,search) {
+    var visited = [];
+    return function(n) {
+        if(n == search) {
+            helloWriter([message,"found",n, "visited",visited.join(', ')])
+            return true;
+        }
+        visited.push(n);
+        return false;
 
-visited = [];
-search('bfs',0, nodes, function (n) {
-    if(n == 10) {
-        helloWriter(["BFS found",n, "visited",visited.join(', ')])
-        return true;
     }
-    visited.push(n);
-    return false;
-});
+}
 
-visited = [];
-search_recur(0, nodes, function (n) {
-    if(n == 10) {
-        helloWriter(["DFS recursive found",n, "visited",visited.join(', ')])
-        return true;
-    }
-    visited.push(n);
-    return false;
-});
+search('dfs',0, nodes, cbFactory('dfs',10));
+
+search('bfs',0, nodes, cbFactory('bfs',10));
+
+search_recur('bfs',0, nodes, cbFactory('bfs recursive',10));
+
+search_recur('dfs',0, nodes, cbFactory('dfs recursive',10));
+
 
