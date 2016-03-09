@@ -7,8 +7,14 @@
     </head>
 
     <body>
-		<p id="hello">Calculating</p>
+		<p id="search">Calculating</p>
+		<script type="text/javascript">
+			function lineWriter(o) {
+        		document.getElementById('search').innerHTML += "</br>" + JSON.stringify(o);
+		    }
+		</script>
     	<script src="dfs-bfs.js"></script>
+    	<script src="sort.js"></script>
     </body>
 
 </html>
