@@ -17,6 +17,16 @@ function search(type, start, nodes, fn) {
     }
 };
 
+function search_recur(start,nodes,fn) {
+    var current = nodes[start];
+    (function _search_recur(children_list) {
+        for (var i = 0; i < children_list.length; i++) {
+            if(fn(children_list[i])) return;
+            var search = nodes[children_list[i]];
+            _search_recur(search)
+        }
+    })(current);
+}
 
 function helloWriter(o) {
     document.getElementById('hello').innerHTML += "</br>" + JSON.stringify(o);
@@ -25,7 +35,7 @@ function helloWriter(o) {
 var nodes = [
     [1, 2, 3, 4], 
     [5, 6],
-    [7,0],
+    [7],
     [8, 9],
     [10], 
     [],
@@ -55,6 +65,16 @@ visited = [];
 search('bfs',0, nodes, function (n) {
     if(n == 10) {
         helloWriter(["BFS found",n, "visited",visited.join(', ')])
+        return true;
+    }
+    visited.push(n);
+    return false;
+});
+
+visited = [];
+search_recur(0, nodes, function (n) {
+    if(n == 10) {
+        helloWriter(["DFS recursive found",n, "visited",visited.join(', ')])
         return true;
     }
     visited.push(n);
