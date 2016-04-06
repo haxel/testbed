@@ -12,6 +12,15 @@
 			function lineWriter(o) {
         		document.getElementById('search').innerHTML += "</br>" + JSON.stringify(o);
 		    }
+
+		    function now() { return (new Date()).getTime(); }
+
+		    function timefunc(fn) { 
+		        var start = now();
+		        fn.apply(null,Array.prototype.slice.call(arguments,1));
+		        return now() - start ;
+		    }
+
 		</script>
     	<script src="dfs-bfs.js"></script>
     	<script src="sort.js"></script>

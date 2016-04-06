@@ -51,13 +51,16 @@ setTimeout(function() {
         while(unsorted.length > 0) {
             // get first unsorted 
             var next = unsorted.shift();
+            var found = false;
             // find correct place in sorted and insert
             for (var i = 0; i < sorted.length; i++) {
                 if(sorted[i] >= next) {
                     sorted.splice(i,0,next);
+                    found = true;
                     break;
                 }
             }
+            if(!found) sorted.push(next);
         }
         return sorted;
     }
@@ -82,14 +85,26 @@ setTimeout(function() {
         return quick_sort(left).concat(pivot,quick_sort(right));
     }
 
-    var a = [10, 5, 6, 7, 8, 1, 8, 3, 1, 9,10, 5, 6, 7, 8, 1, 8, 3, 1, 9];
+    function randomizer(n) {
+        var l = [];
+        for (var i = 0; i < n; i++) {
+            l.push(Math.floor(Math.random() * n));
+        }
+        return l;
+    }
+
+    var a = randomizer(10000);
     var b = a.slice(0);
     var c = a.slice(0);
     var d = a.slice(0);
-    lineWriter(["tosort",a]);
-    lineWriter(["selection sort",selection_sort(a)]);
-    lineWriter(["bubble sort",bubble_sort(a)]);
-    lineWriter(["quick sort",quick_sort(b)]);
-    lineWriter(["insertion sort",insertion_sort(c)]);
+
+    lineWriter(["selection sort",timefunc(selection_sort,a)]);
+
+    lineWriter(["bubble sort",timefunc(bubble_sort,b)]);
+
+    lineWriter(["quick sort",timefunc(quick_sort,c)]);
+
+    lineWriter(["insertion sort",timefunc(insertion_sort,d)]);
+
 },0)
 

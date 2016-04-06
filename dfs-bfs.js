@@ -57,7 +57,25 @@
         []
     ];
 
-    lineWriter(["nodes",nodes]);
+
+
+    function randomTree(depth,breadth) {
+        var count = 0;
+        var nodes = [];
+        while(depth >= 0) {
+            var children = [];
+            var rbreadth = (Math.random() * breadth) | 0;
+            for (var i = 0; i < rbreadth; i++) {
+                children.push(++count);
+            }
+            nodes.push(children);
+            depth -= 1;
+        }
+        for (i = nodes.length; i < count; i++) {
+            nodes.push([]);
+        }
+        return nodes;
+    }
 
     function cbFactory(message,search) {
         var visited = [];
@@ -71,16 +89,20 @@
 
         }
     }
+    nodes = randomTree(4,100);
+    find =  (Math.random() * nodes.length) | 0
 
-    search('dfs',0, nodes, cbFactory('dfs',10));
+    //lineWriter(["nodes",nodes]);
 
-    search('bfs',0, nodes, cbFactory('bfs',10));
+    search('dfs',0, nodes, cbFactory('dfs',find));
+
+    search('bfs',0, nodes, cbFactory('bfs',find));
 
     // note that it will display AFTER dfs recursive because its pushed on the queue
     // by setTiemout
-    search_recur('bfs',0, nodes, cbFactory('bfs recursive',10));
+    search_recur('bfs',0, nodes, cbFactory('bfs recursive',find));
 
-    search_recur('dfs',0, nodes, cbFactory('dfs recursive',10));
+    search_recur('dfs',0, nodes, cbFactory('dfs recursive',find));
 
 
 })()
